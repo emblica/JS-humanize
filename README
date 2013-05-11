@@ -1,23 +1,39 @@
 JS library useful for adding a “human touch” to data. 
 
-Examples:
+## Functions available: ##
 
-intcomma (4500000 = 4,500,000)
+####humanize.noConflict()####
+Give control of the "humanize" variable back to its previous owner. Returns a reference to the humanize object.
 
-intword (1000000 = 1.0 million)
+####humanize.time()####
+Retrieves the current time in seconds
 
-naturalDay (15 April 2012 16:25:30 = Today)
+####humanize.date(format [, timestamp / JS Date Object = new Date()])####
+This is a port of [php.js date](http://phpjs.org/functions/date:380) and behaves exactly like [PHP's date](http://php.net/manual/en/function.date.php)
 
-ordinal (3 = 3rd)
+####humanize.numberFormat(number [, decimals = 2, decPoint = '.', thousandsSep = ','])####
+Format a number to have decimal significant decimal places, using decPoint as the decimal separator, and thousandsSep as thousands separater
 
-filesizeformat (1234567890 = 1.15 Gb)
+####humanize.naturalDay(timestamp [, format = 'Y-m-d'])####
+Returns 'today', 'tomorrow' or 'yesterday', as appropriate, otherwise format the date using the passed format with humanize.date()
 
-linebreaks (Play\ning with blank lines = <p>Play<br />ing with blank lines</p>)
+####humanize.relativeTime(timestamp)####
+Returns a relative time to the current time, seconds as the most granular up to years to the least granular.
 
-linebreaksbr (Play\ning with blank lines = Play<br />ing with blank lines)
+####humanize.ordinal(integer)####
+Converts a number into its [ordinal representation](http://en.wikipedia.org/wiki/Ordinal_number_\(linguistics\)).
 
-pluralize (1, "y", "ies" = y)
+####humanize.filesize(filesize [, kilo = 1024, decimals = 2, decPoint = '.', thousandsSep = ',']) ####
+Converts a byte count to a human readable value using kilo as the basis, and numberFormat formatting
 
-truncatechars ("hello world", 10 = "hello w...")
+####humanize.linebreaks(string)####
+Converts a string's newlines into properly formatted html ie. one new line -> br, two new lines -> p, entire thing wrapped in p
 
-truncatewords ("Playing with truncate words", 3 = Playing with truncate ...)
+####humanize.nl2br(string)####
+Converts a string's newlines into br's
+
+####humanize.truncatechars(string, length)####
+Truncates a string to length-1 and appends '…'. If string is shorter than length, then no-op
+
+####humanize.truncatewords(string, numWords)####
+Truncates a string to only include the first numWords words and appends '…'. If string has fewer words than newWords, then no-op
