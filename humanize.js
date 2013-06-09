@@ -25,7 +25,7 @@ function date (format, timestamp) {
 			}
 			return n;
 		},
-		txt_words = ["Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+		txt_words = ["su", "ma", "ti", "ke", "to", "pe", "la", "tammikuu", "helmikuu", "maaliskuu", "huhtikuu", "toukokuu", "kesäkuu", "heinäkuu", "elokuu", "syyskuu", "lokakuu", "marraskuu", "joulukuu"];
 	formatChrCb = function (t, s) {
 		return f[t] ? f[t]() : s;
 	};
@@ -41,14 +41,26 @@ function date (format, timestamp) {
 			return jsdate.getDate();
 		},
 		l: function () { // Full day name; Monday…Sunday
-			return txt_words[f.w()] + 'day';
+			var d = txt_words[f.w()];
+			// full days:
+			var ffd = [];
+			ffd['ma'] = 'maanantai';
+			ffd['ti'] = 'tiistai';
+			ffd['ke'] = 'keskiviikko';
+			ffd['to'] = 'torstai';
+			ffd['pe'] = 'perjantai';
+			ffd['la'] = 'lauantai';
+			ffd['su'] = 'sunnuntai';
+			return ffd[d];
+			//return txt_words[f.w()] + 'day';
 		},
 		N: function () { // ISO-8601 day of week; 1[Mon]..7[Sun]
 			return f.w() || 7;
 		},
 		S: function () { // Ordinal suffix for day of month; st, nd, rd, th
 			var j = f.j();
-			return j > 4 && j < 21 ? 'th' : {1: 'st', 2: 'nd', 3: 'rd'}[j % 10] || 'th';
+			//return j > 4 && j < 21 ? 'th' : {1: 'st', 2: 'nd', 3: 'rd'}[j % 10] || 'th';
+			return '.'
 		},
 		w: function () { // Day of week; 0[Sun]..6[Sat]
 			return jsdate.getDay();
@@ -212,7 +224,7 @@ Examples:
 You can pass in either an integer or a string representation of an integer.
 /**/
 Humanize.apnumber = function( n ) {
-	var strings = [ 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine' ];
+	var strings = [ 'yksi', 'kaksi', 'kolme', 'neljä', 'viisi', 'kuusi', 'seitsämän', 'kahdeksan', 'yhdeksän' ];
 	var result = strings[ parseInt( n ) -1 ];
 	return result !== undefined ? result : n;
 };
@@ -231,7 +243,7 @@ https://github.com/gburtini/Humanize-PHP/blob/master/Humanize.php
 /**/
 Humanize.intcomma = function( number, decimals ) {
 	decimals = decimals === undefined ? 0 : decimals;
-	return number_format( number, decimals, '.', ',' );
+	return number_format( number, decimals, ',', '.' );
 };
 
 /*!
@@ -250,17 +262,17 @@ Humanize.intword = function( number ) {
 	} else if( number < 100 ) {
 		return Humanize.intcomma(number, 1 );
 	} else if( number < 1000 ) {
-		return Humanize.intcomma( number / 100, 1 ) + " hundred";
+		return Humanize.intcomma( number / 100, 1 ) + " sataa";
 	} else if( number < 100000 ) {
-		return Humanize.intcomma( number / 1000.0, 1 ) + " thousand";
+		return Humanize.intcomma( number / 1000.0, 1 ) + " tuhatta";
 	} else if( number < 1000000 ) {
-		return Humanize.intcomma( number / 100000.0, 1 ) + " hundred thousand";
+		return Humanize.intcomma( number / 100000.0, 1 ) + " sataa tuhatta";
 	} else if( number < 1000000000 ) {
-		return Humanize.intcomma( number / 1000000.0, 1 ) + " million";
+		return Humanize.intcomma( number / 1000000.0, 1 ) + " miljoonaa";
 	} else if( number < 1000000000000 ) { //senseless on a 32 bit system probably.
-		return Humanize.intcomma( number / 1000000000.0, 1 ) + " billion";
+		return Humanize.intcomma( number / 1000000000.0, 1 ) + " miljardia";
 	} else if( number < 1000000000000000 ) {
-		return Humanize.intcomma( number / 1000000000000.0, 1 ) + " trillion";
+		return Humanize.intcomma( number / 1000000000000.0, 1 ) + " biljoonaa";
 	} 
 	return "" + number;	// too big.
 }
@@ -291,7 +303,7 @@ Humanize.processDate = function( timestamp ) {
 };
 Humanize.naturalDay = function(timestamp, format) {
 	timestamp = Humanize.processDate( timestamp );
-	var format = format === undefined ? 'Y-m-d' : format; //'F j, Y'
+	var format = format === undefined ? 'd.m.Y' : format; //'F j, Y'
 
 	var oneday = 60 * 60 * 24;
 	var d = new Date();
@@ -302,11 +314,11 @@ Humanize.naturalDay = function(timestamp, format) {
 	var yesterday = today - oneday;
 	
 	if( timestamp >= yesterday && timestamp < today ) {
-		return "yesterday";
+		return "eilen";
 	} else if( timestamp >= today && timestamp < tomorrow ) {
-		return "today";
+		return "tänään";
 	} else if( timestamp >= tomorrow && timestamp < end_tomorrow ) {
-		return "tomorrow";
+		return "huomenna";
 	} else {
 		return date( format, timestamp );
 	}
@@ -340,7 +352,7 @@ Humanize.naturalTime = function( timestamp, format ) {
 	var now = time();
 	var hour = 60 * 60;
 	var seconds, minutes, hours;
-	if ( Humanize.naturalDay( timestamp, format ) === 'today' ) {
+	if ( Humanize.naturalDay( timestamp, format ) === 'tänään' ) {
 		var hourago = now - hour;
 		var hourfromnow = now + hour;
 		// if timestamp passed in was after an hour ago…
@@ -354,18 +366,18 @@ Humanize.naturalTime = function( timestamp, format ) {
 				// if more than 60 minutes ago, report in hours
 				if ( minutes > 60 ) {
 					hours = Math.round(minutes/60);
-					return "in about "+hours+" hours";
+					return hours+" tunnin päästä";
 				} else if ( ! minutes ) {
 					if ( seconds <= 10 ) {
-						return "just now"
+						return "juuri nyt"
 					} else {
 						
-						return "in "+seconds+" seconds";
+						return seconds+" sekunnin päästä";
 					}
 				} else if ( minutes === 1 ) {
-					return "in one minute";
+					return "minuutin päästä";
 				} else {
-					return "in "+minutes+" minutes";
+					return minutes+" minuutin päästä";
 				}
 			}
 			/*!
@@ -376,14 +388,14 @@ Humanize.naturalTime = function( timestamp, format ) {
 			/*! Process minutes */
 			if ( ! minutes ) {
 				if ( seconds <= 10 ) {
-					return "now"
+					return "nyt"
 				} else {
-					return seconds + " seconds ago";
+					return seconds + " sekunttia sitten";
 				}
 			} else if ( minutes === 1 ) {
-				return "one minute ago";
+				return "minuutti sitten";
 			} else {
-				return minutes+" minutes ago";
+				return minutes+" minuuttia sitten";
 			}
 		}
 	}
@@ -403,6 +415,7 @@ Examples:
 You can pass in either an integer or a string representation of an integer.
 /**/
 Humanize.ordinal = function( value ) {
+	return value + '.';
 	var number = parseInt( value );
 	if( number === 0 ) {
 		return value; 	// could be a bad string or just a 0.
@@ -443,15 +456,15 @@ If value is 123456789, the output would be 117.7 MB.
 /**/
 Humanize.filesizeformat = function(filesize) {
 	if (filesize >= 1073741824) {
-		 filesize = number_format(filesize / 1073741824, 2, '.', '') + ' Gb';
+		 filesize = number_format(filesize / 1073741824, 2, ',', '') + ' Gt';
 	} else { 
 		if (filesize >= 1048576) {
-	 		filesize = number_format(filesize / 1048576, 2, '.', '') + ' Mb';
+	 		filesize = number_format(filesize / 1048576, 2, ',', '') + ' Mt';
    	} else { 
 			if (filesize >= 1024) {
-			filesize = number_format(filesize / 1024, 0) + ' Kb';
+			filesize = number_format(filesize / 1024, 0) + ' Kt';
   		} else {
-			filesize = number_format(filesize, 0) + ' bytes';
+			filesize = number_format(filesize, 0) + ' tavua';
 			};
  		};
 	};
