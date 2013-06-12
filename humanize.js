@@ -346,7 +346,7 @@ Examples (when ‘now’ is 17 Feb 2007 16:30:00):
 /**/
 Humanize.naturalTime = function( timestamp, format ) {
 	timestamp = Humanize.processDate( timestamp );
-	format = format === undefined ? 'g:ia' : format;
+	format = format === undefined ? 'G:i' : format;
 	
 	
 	var now = time();
@@ -402,6 +402,14 @@ Humanize.naturalTime = function( timestamp, format ) {
 
 	return date( format, timestamp );
 };
+
+Humanize.naturalDateTime = function(timestamp, format){
+	if ( Humanize.naturalDay( timestamp, format) === 'tänään' ){
+		return Humanize.naturalTime(timestamp, format);
+	}else{
+		return Humanize.naturalDay(timestamp, format) + " " + Humanize.naturalTime(timestamp, format);
+	}
+}
 
 /*!
 ordinal
