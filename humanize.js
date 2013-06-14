@@ -323,6 +323,36 @@ Humanize.naturalDay = function(timestamp, format) {
 		return date( format, timestamp );
 	}
 }
+
+Humanize.naturalTimeDelta = function(timestampa, timestampb){
+	timestampa = Humanize.processDate(timestampa);
+	timestampb = Humanize.processDate(timestampb);
+
+	timedelta = timestampb-timestampa;
+
+	var oneminute = 60;
+	var onehour = 60*oneminute;
+	var oneday = onehour*24;
+
+	var days = (timedelta-(timedelta%oneday))/oneday;
+	var tsafterdays = (timedelta-(days*oneday));
+	var hours = (tsafterdays-(tsafterdays%onehour))/onehour;
+	var tsafterhours = (tsafterdays-(hours*onehour));
+	var minutes = (tsafterhours-(tsafterhours%oneminute))/oneminute;
+
+	var ret = "";
+	if(days > 0){
+		ret += days+' '+Humanize.oneOrElse(days, 'päivä', 'päivää');
+	}
+	if(hours > 0){
+		if(ret != ''){ret+=', ';}
+		ret += hours+' '+Humanize.oneOrElse(hours, 'tunti', 'tuntia');
+	}
+		if(ret != ''){ret+=', ';}
+		ret += minutes+' '+Humanize.oneOrElse(minutes, 'minuutti', 'minuuttia');
+	return ret;
+}
+
 /*!
 naturaltime
 New in Django 1.4: Please see the release notes
@@ -405,7 +435,7 @@ Humanize.naturalTime = function( timestamp, format ) {
 
 Humanize.naturalDateTime = function(timestamp, format){
 	if ( Humanize.naturalDay( timestamp, format) === 'tänään' ){
-		return Humanize.naturalTime(timestamp, format);
+		return Humanize.naturalDay( timestamp, format) + ', ' + Humanize.naturalTime(timestamp, format);
 	}else{
 		return Humanize.naturalDay(timestamp, format) + " " + Humanize.naturalTime(timestamp, format);
 	}
@@ -535,6 +565,11 @@ Humanize.pluralize = function( number, suffix1, suffix2 ) {
 	
 	return parseInt( number ) === 1 ? singular : plural;
 };
+
+Humanize.oneOrElse = function(value, one, otherthanone){
+	if(value == 1){ return one;}
+	return otherthanone;
+}
 
 /*!
 truncatechars
