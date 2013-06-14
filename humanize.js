@@ -399,7 +399,7 @@ Humanize.naturalTime = function( timestamp, format ) {
 					return hours+" tunnin päästä";
 				} else if ( ! minutes ) {
 					if ( seconds <= 10 ) {
-						return "juuri nyt"
+						return "hetkien kuluttua"
 					} else {
 						
 						return seconds+" sekunnin päästä";
@@ -420,7 +420,7 @@ Humanize.naturalTime = function( timestamp, format ) {
 				if ( seconds <= 10 ) {
 					return "nyt"
 				} else {
-					return seconds + " sekunttia sitten";
+					return seconds + " sekuntia sitten";
 				}
 			} else if ( minutes === 1 ) {
 				return "minuutti sitten";
@@ -434,10 +434,15 @@ Humanize.naturalTime = function( timestamp, format ) {
 };
 
 Humanize.naturalDateTime = function(timestamp, format){
-	if ( Humanize.naturalDay( timestamp, format) === 'tänään' ){
-		return Humanize.naturalDay( timestamp, format) + ', ' + Humanize.naturalTime(timestamp, format);
+	var time = Humanize.naturalTime(timestamp, format);
+	var date = Humanize.naturalDay( timestamp, format)
+	if (date === 'tänään' ){
+		if(time == 'nyt' || time == 'hetken kuluttua'){
+			return time;
+		}
+		return date+', '+time;
 	}else{
-		return Humanize.naturalDay(timestamp, format) + " " + Humanize.naturalTime(timestamp, format);
+		return date+" "+time;
 	}
 }
 
